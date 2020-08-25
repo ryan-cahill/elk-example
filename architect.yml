@@ -1,0 +1,100 @@
+name: ryan-cahill-a0/elk # TODO: change name after testing
+description: ELK stack example
+keywords:
+  - architect
+  - elk
+  - elasticsearch
+  - logstash
+  - kibana
+
+parameters:
+  ELASTICSEARCH_USERNAME:
+  ELASTICSEARCH_PASSWORD:
+
+interfaces:
+  elasticsearch:
+    description: elasticsearch api
+    url: ${ services.elasticsearch.interfaces.http.url }
+  elasticsearch_transport:
+    description: elasticsearch api
+    url: ${ services.elasticsearch.interfaces.transport.url }
+  logstash:
+    description: logstash api
+    url: ${ services.logstash.interfaces.http.url }
+  logstash_input:
+    description: logstash input
+    url: ${ services.logstash.interfaces.input.url }
+  kibana:
+    description: kibana api
+    url: ${ services.kibana.interfaces.http.url }
+
+services:
+  elasticsearch:
+    language: java
+    interfaces:
+      http: 9200
+      transport: 9300
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      DISCOVERY_TYPE: single-node # TODO: move elsewhere to allow for prod deployments
+      CLUSTER_NAME: docker-cluster
+      NETWORK_HOST: 0.0.0.0
+      XPACK_LICENSE: trial
+      XPACK_SECURITY_ENABLED: true
+      XPACK_MONITORING_COLLECTION_ENABLED: true
+    debug:
+      volumes:
+        config:
+          host_path: ./elasticsearch/config/elasticsearch.yml # TODO: handle for remote deployments with file read in register
+          mount_path: /usr/share/elasticsearch/config/elasticsearch.yml
+          readonly: true
+    volumes:
+      data:
+        mount_path: /usr/share/elasticsearch/data
+
+  logstash:
+    language: ruby
+    interfaces:
+      http: 9600
+      input: 5000 # TODO: do we need to take tcp/udp into consideration?
+    image: docker.elastic.co/logstash/logstash:7.8.0
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      XPACK_MONITORING_ELASTICSEARCH_HOSTS: ${ services.elasticsearch.interfaces.http.url }
+      XPACK_MONITORING_ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
+      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      XPACK_MONITORING_ENABLED: true
+      ELASTICSEARCH_HOST: ${ services.elasticsearch.interfaces.http.host }:${ services.elasticsearch.interfaces.http.port }
+      ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
+      ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      LOG_PORT: ${ services.logstash.interfaces.logs.port }
+    debug:
+      volumes:
+        config:
+          host_path: ./logstash/config/logstash.yml
+          mount_path: /usr/share/logstash/config/logstash.yml
+        pipeline:
+          host_path: ./logstash/pipeline
+          mount_path: /usr/share/logstash/pipeline
+          readonly: true
+
+  kibana:
+    language: java
+    interfaces:
+      http: 5601
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    environment:
+      ELASTICSEARCH_HOSTS: ${ services.elasticsearch.interfaces.http.url }
+      ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
+      ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: true
+      SERVER_NAME: kibana
+      SERVER_HOST: 0.0.0.0
+    debug:
+      volumes:
+        config:
+          host_path: ./kibana/config/kibana.yml
+          mount_path: /usr/share/kibana/config/kibana.yml
+          readonly: true
