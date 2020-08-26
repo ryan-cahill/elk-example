@@ -1,8 +1,5 @@
 interfaces:
-  elasticsearch: ${ components['ryan-cahill-a0/elk'].interfaces.elasticsearch.url }
-  elasticsearch_transport: ${ components['ryan-cahill-a0/elk'].interfaces.elasticsearch_transport.url }
   logstash: ${ components['ryan-cahill-a0/elk'].interfaces.logstash.url }
-  logstash_input: ${ components['ryan-cahill-a0/elk'].interfaces.logstash_input.url }
   kibana: ${ components['ryan-cahill-a0/elk'].interfaces.kibana.url }
 
 components:
@@ -12,3 +9,4 @@ components:
     parameters:
       ELASTICSEARCH_USERNAME: elastic
       ELASTICSEARCH_PASSWORD: changeme
+      ELASTICSEARCH_DISCOVERY_TYPE: single-node
