@@ -15,10 +15,10 @@ parameters:
 interfaces:
   logstash:
     description: logstash input
-    url: ${ services.logstash.interfaces.input.url }
+    url: ${{ services.logstash.interfaces.input.url }}
   kibana:
     description: kibana api
-    url: ${ services.kibana.interfaces.http.url }
+    url: ${{ services.kibana.interfaces.http.url }}
 
 services:
   elasticsearch:
@@ -29,8 +29,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
-      ELASTIC_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
-      DISCOVERY_TYPE: ${ parameters.ELASTICSEARCH_DISCOVERY_TYPE }
+      ELASTIC_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
+      DISCOVERY_TYPE: ${{ parameters.ELASTICSEARCH_DISCOVERY_TYPE }}
       CLUSTER_NAME: docker-cluster
       NETWORK_HOST: 0.0.0.0
       XPACK_LICENSE: trial
@@ -55,14 +55,14 @@ services:
       context: ./logstash
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
-      XPACK_MONITORING_ELASTICSEARCH_HOSTS: ${ services.elasticsearch.interfaces.http.url }
-      XPACK_MONITORING_ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
-      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      XPACK_MONITORING_ELASTICSEARCH_HOSTS: ${{ services.elasticsearch.interfaces.http.url }}
+      XPACK_MONITORING_ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
+      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
       XPACK_MONITORING_ENABLED: true
-      ELASTICSEARCH_HOST: ${ services.elasticsearch.interfaces.http.host }:${ services.elasticsearch.interfaces.http.port }
-      ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
-      ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
-      LOG_PORT: ${ services.logstash.interfaces.input.port }
+      ELASTICSEARCH_HOST: ${{ services.elasticsearch.interfaces.http.host }}:${{ services.elasticsearch.interfaces.http.port }}
+      ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
+      ELASTICSEARCH_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
+      LOG_PORT: ${{ services.logstash.interfaces.input.port }}
     debug:
       volumes:
         config:
@@ -79,9 +79,9 @@ services:
       http: 5601
     image: docker.elastic.co/kibana/kibana:7.8.0
     environment:
-      ELASTICSEARCH_HOSTS: ${ services.elasticsearch.interfaces.http.url }
-      ELASTICSEARCH_USERNAME: ${ parameters.ELASTICSEARCH_USERNAME }
-      ELASTICSEARCH_PASSWORD: ${ parameters.ELASTICSEARCH_PASSWORD }
+      ELASTICSEARCH_HOSTS: ${{ services.elasticsearch.interfaces.http.url }}
+      ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
+      ELASTICSEARCH_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
       MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: true
       SERVER_NAME: kibana
       SERVER_HOST: 0.0.0.0

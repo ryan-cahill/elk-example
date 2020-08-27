@@ -1,6 +1,6 @@
 interfaces:
-  logstash: ${ components['ryan-cahill-a0/elk'].interfaces.logstash.url }
-  kibana: ${ components['ryan-cahill-a0/elk'].interfaces.kibana.url }
+  logstash: ${{ components['ryan-cahill-a0/elk'].interfaces.logstash.url }}
+  kibana: ${{ components['ryan-cahill-a0/elk'].interfaces.kibana.url }}
 
 components:
   ryan-cahill-a0/elk:
