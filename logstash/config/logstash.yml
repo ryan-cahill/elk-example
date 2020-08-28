@@ -1,5 +1,5 @@
 http.host: 0.0.0.0
-xpack.monitoring.elasticsearch.hosts: http://ryan-cahill-a0--elk--elasticsearch--latest--8edo3yqt:9200
-xpack.monitoring.elasticsearch.password: changeme
-xpack.monitoring.elasticsearch.username: elastic
+xpack.monitoring.elasticsearch.hosts: ${ELASTICSEARCH_URL}
+xpack.monitoring.elasticsearch.password: ${ELASTICSEARCH_USERNAME}
+xpack.monitoring.elasticsearch.username: ${ELASTICSEARCH_PASSWORD}
 xpack.monitoring.enabled: true

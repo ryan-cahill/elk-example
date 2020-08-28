@@ -11,6 +11,9 @@ parameters:
   ELASTICSEARCH_USERNAME:
   ELASTICSEARCH_PASSWORD:
   ELASTICSEARCH_DISCOVERY_TYPE:
+    required: false
+  ELASTICSEARCH_CLUSTER_NAME:
+    default: elasticsearch-cluster
 
 interfaces:
   logstash:
@@ -26,22 +29,17 @@ services:
     interfaces:
       http: 9200
       transport: 9300
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    build:
+      context: ./elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       ELASTIC_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
       DISCOVERY_TYPE: ${{ parameters.ELASTICSEARCH_DISCOVERY_TYPE }}
-      CLUSTER_NAME: docker-cluster
+      CLUSTER_NAME: ${{ parameters.ELASTICSEARCH_CLUSTER_NAME }}
       NETWORK_HOST: 0.0.0.0
       XPACK_LICENSE: trial
       XPACK_SECURITY_ENABLED: true
       XPACK_MONITORING_COLLECTION_ENABLED: true
-    debug:
-      volumes: # TODO: prod volume configurations for all services
-        config:
-          host_path: ./elasticsearch/config/elasticsearch.yml
-          mount_path: /usr/share/elasticsearch/config/elasticsearch.yml
-          readonly: true
     volumes:
       data:
         mount_path: /usr/share/elasticsearch/data
@@ -55,29 +53,18 @@ services:
       context: ./logstash
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
-      XPACK_MONITORING_ELASTICSEARCH_HOSTS: ${{ services.elasticsearch.interfaces.http.url }}
-      XPACK_MONITORING_ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
-      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
-      XPACK_MONITORING_ENABLED: true
+      ELASTICSEARCH_URL: ${{ services.elasticsearch.interfaces.http.url }}
       ELASTICSEARCH_HOST: ${{ services.elasticsearch.interfaces.http.host }}:${{ services.elasticsearch.interfaces.http.port }}
       ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
       ELASTICSEARCH_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
       LOG_PORT: ${{ services.logstash.interfaces.input.port }}
-    debug:
-      volumes:
-        config:
-          host_path: ./logstash/config/logstash.yml
-          mount_path: /usr/share/logstash/config/logstash.yml
-        pipeline:
-          host_path: ./logstash/pipeline
-          mount_path: /usr/share/logstash/pipeline
-          readonly: true
 
   kibana:
     language: typescript
     interfaces:
       http: 5601
-    image: docker.elastic.co/kibana/kibana:7.8.0
+    build:
+      context: ./kibana
     environment:
       ELASTICSEARCH_HOSTS: ${{ services.elasticsearch.interfaces.http.url }}
       ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}
@@ -85,9 +72,3 @@ services:
       MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED: true
       SERVER_NAME: kibana
       SERVER_HOST: 0.0.0.0
-    debug:
-      volumes:
-        config:
-          host_path: ./kibana/config/kibana.yml
-          mount_path: /usr/share/kibana/config/kibana.yml
-          readonly: true
