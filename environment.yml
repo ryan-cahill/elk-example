@@ -4,7 +4,7 @@ interfaces:
 
 components:
   ryan-cahill-a0/elk:
-    extends: latest
+    extends: file:./architect.yml
 
     parameters:
       ELASTICSEARCH_USERNAME: elastic # TODO: remove when publishing

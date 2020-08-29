@@ -14,6 +14,12 @@ parameters:
     required: false
   ELASTICSEARCH_CLUSTER_NAME:
     default: elasticsearch-cluster
+  ES_JAVA_OPTS:
+    default: "-Xmx2g -Xms2g"
+  LS_JAVA_OPTS:
+    default: "-Xmx512m -Xms512m"
+  XPACK_LICENSE:
+    default: trial
 
 interfaces:
   logstash:
@@ -30,18 +36,19 @@ services:
       http: 9200
       transport: 9300
     build:
-      context: ./elasticsearch
+      context: ./elasticsearch/config
     environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ES_JAVA_OPTS: ${{ parameters.ES_JAVA_OPTS }}
       ELASTIC_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
       DISCOVERY_TYPE: ${{ parameters.ELASTICSEARCH_DISCOVERY_TYPE }}
       CLUSTER_NAME: ${{ parameters.ELASTICSEARCH_CLUSTER_NAME }}
       NETWORK_HOST: 0.0.0.0
-      XPACK_LICENSE: trial
+      XPACK_LICENSE: ${{ parameters.XPACK_LICENSE }}
       XPACK_SECURITY_ENABLED: true
       XPACK_MONITORING_COLLECTION_ENABLED: true
+      ELASTICSEARCH_HOST: ${{ services.elasticsearch.interfaces.http.host }}:${{ services.elasticsearch.interfaces.http.port }}
     volumes:
-      data:
+      elasticsearch_data:
         mount_path: /usr/share/elasticsearch/data
 
   logstash:
@@ -52,7 +59,7 @@ services:
     build:
       context: ./logstash
     environment:
-      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      LS_JAVA_OPTS: ${{ parameters.LS_JAVA_OPTS }}
       ELASTICSEARCH_URL: ${{ services.elasticsearch.interfaces.http.url }}
       ELASTICSEARCH_HOST: ${{ services.elasticsearch.interfaces.http.host }}:${{ services.elasticsearch.interfaces.http.port }}
       ELASTICSEARCH_USERNAME: ${{ parameters.ELASTICSEARCH_USERNAME }}

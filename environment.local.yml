@@ -7,6 +7,13 @@ components:
     extends: file:./architect.yml
 
     parameters:
-      ELASTICSEARCH_USERNAME: elastic # TODO: remove when publishing
-      ELASTICSEARCH_PASSWORD: changeme # TODO: remove when publishing
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: changeme
       ELASTICSEARCH_DISCOVERY_TYPE: single-node
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTICSEARCH_CLUSTER_NAME: elasticsearch-cluster-local
+
+    services:
+      elasticsearch:
+        build:
+          context: ./elasticsearch/config-local
