@@ -1,4 +1,5 @@
 cluster.name: ${CLUSTER_NAME}
+node.name: architect-es
 network.host: ${NETWORK_HOST}
 
 xpack.license.self_generated.type: ${XPACK_LICENSE}
@@ -7,5 +8,5 @@ xpack.monitoring.collection.enabled: ${XPACK_MONITORING_COLLECTION_ENABLED}
 
 discovery.type: ${DISCOVERY_TYPE}
 
-discovery.seed_hosts: ${ELASTICSEARCH_HOST} # TODO: use separate file for prod deployments as these aren't valid for single-node deploys
-cluster.initial_master_nodes: ${ELASTICSEARCH_HOST}
+discovery.seed_hosts: ${ELASTICSEARCH_HOST}
+cluster.initial_master_nodes: architect-es

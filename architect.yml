@@ -37,6 +37,7 @@ services:
       transport: 9300
     build:
       context: ./elasticsearch/config
+      command: sysctl -w vm.max_map_count=262144
     environment:
       ES_JAVA_OPTS: ${{ parameters.ES_JAVA_OPTS }}
       ELASTIC_PASSWORD: ${{ parameters.ELASTICSEARCH_PASSWORD }}
