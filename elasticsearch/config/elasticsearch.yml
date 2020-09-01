@@ -8,5 +8,5 @@ xpack.monitoring.collection.enabled: ${XPACK_MONITORING_COLLECTION_ENABLED}
 
 discovery.type: ${DISCOVERY_TYPE}
 
-discovery.seed_hosts: ${ELASTICSEARCH_HOST}
+discovery.seed_hosts: []
 cluster.initial_master_nodes: architect-es
