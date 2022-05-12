@@ -20,7 +20,7 @@ env:
   ARCHITECT_ACCOUNT: architect-ryan
   PLATFORM_NAME: architect
   COMPONENT_NAME: elk-example
-  ENVIRONMENT_TTL: --ttl=4hours
+  ENVIRONMENT_TTL: 
 
 jobs:
   architect_remove_preview:
