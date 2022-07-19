@@ -23,6 +23,7 @@ services:
       ES_JAVA_OPTS: '-Xmx256m -Xms256m'
       ELASTIC_PASSWORD: changeme
       discovery.type: single-node
+    reserved_name: elasticsearch
   logstash:
     build:
       args:
@@ -52,6 +53,7 @@ services:
       ELASTICSEARCH_URL: ${{ services.elasticsearch.interfaces.main.url }}
     depends_on:
       - elasticsearch
+    reserved_name: logstash
   kibana:
     build:
       args:
@@ -68,5 +70,6 @@ services:
         port: 5601
     depends_on:
       - elasticsearch
+    reserved_name: kibana
     environment:
       ELASTICSEARCH_URL: ${{ services.elasticsearch.interfaces.main.url }}
