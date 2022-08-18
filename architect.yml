@@ -22,7 +22,8 @@ services:
     environment:
       ES_JAVA_OPTS: '-Xmx256m -Xms256m'
       ELASTIC_PASSWORD: changeme
-      discovery.type: single-node
+      DISCOVERY_TYPE: single-node
+      ELASTIC_DISCOVERY_TYPE: single-node
     reserved_name: elasticsearch
   logstash:
     build:
