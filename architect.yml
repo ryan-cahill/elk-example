@@ -5,7 +5,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
       context: elasticsearch/
-    ${{ if architect.environment == 'local' }}:
+    debug:
       volumes:
         volume:
           host_path: ./elasticsearch/config/elasticsearch.yml
@@ -30,7 +30,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
       context: logstash/
-    ${{ if architect.environment == 'local' }}:
+    debug:
       volumes:
         volume:
           host_path: ./logstash/config/logstash.yml
@@ -60,7 +60,7 @@ services:
       args:
         ELK_VERSION: $ELK_VERSION
       context: kibana/
-    ${{ if architect.environment == 'local' }}:
+    debug:
       volumes:
         volume:
           host_path: ./kibana/config/kibana.yml
