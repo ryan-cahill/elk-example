@@ -17,7 +17,7 @@ env:
   COMPONENT_FILE_PATH: architect.yml
   ARCHITECT_ACCOUNT: architect-ryan
   CLUSTER_NAME: architect
-  ENVIRONMENT_TTL: --ttl=48hours
+  ENVIRONMENT_TTL: --ttl=22hours
 
 jobs:
   architect_remove_preview:
