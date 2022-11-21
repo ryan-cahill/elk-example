@@ -16,9 +16,8 @@ env:
   PREVIEW_MAINLINE_BRANCH: master
   COMPONENT_FILE_PATH: architect.yml
   ARCHITECT_ACCOUNT: architect-ryan
-  PLATFORM_NAME: architect
-  COMPONENT_NAME: elk-example
-  ENVIRONMENT_TTL: --ttl=4hours
+  CLUSTER_NAME: architect
+  ENVIRONMENT_TTL: --ttl=48hours
 
 jobs:
   architect_remove_preview:
@@ -56,9 +55,7 @@ jobs:
         run: architect config:set registry_host registry.dev.architect.io
       - name: Login to Architect Cloud
         run: architect login -e ${{ secrets.ARCHITECT_EMAIL }} -p ${{ secrets.ARCHITECT_PASSWORD }} # These secrets were created on your behalf
-      - name: Register component w/ Architect
-        run: architect register ${{ env.COMPONENT_FILE_PATH }} -t ${{ env.PREVIEW_TAG }}
       - name: Create env if not exists
-        run: architect environment:create ${{ env.PREVIEW_TAG }} --platform ${{ env.PLATFORM_NAME }} ${{ env.ENVIRONMENT_TTL }} || exit 0
-      - name: Deploy component
-        run: architect deploy --auto-approve -e ${{ env.PREVIEW_TAG }} ${{ env.COMPONENT_NAME }}:${{ env.PREVIEW_TAG }}
+        run: architect environment:create ${{ env.PREVIEW_TAG }} --cluster ${{ env.CLUSTER_NAME }} ${{ env.ENVIRONMENT_TTL }} || exit 0
+      - name: Register and deploy component
+        run: architect deploy --auto-approve -e ${{ env.PREVIEW_TAG }} ${{ env.COMPONENT_FILE_PATH }}
