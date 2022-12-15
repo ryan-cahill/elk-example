@@ -20,7 +20,7 @@ env:
 jobs:
   architect_create_branch_deployments:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'ryan-cahill-patch-1'
+    if: github.ref_name == 'master'
     steps:
       - uses: actions/checkout@v3
         with:
