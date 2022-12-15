@@ -1,9 +1,12 @@
 name: Architect master Branch Deployment
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
 
 env:
   ARCHITECT_GENERATED: true
