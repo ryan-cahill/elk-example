@@ -1,4 +1,4 @@
-name: Architect master Branch Deployment
+name: Test superset deployment
 
 on:
   pull_request:
@@ -8,33 +8,19 @@ on:
       - synchronize
       - reopened
 
-env:
-  ARCHITECT_GENERATED: true
-  ARCHITECT_BRANCH: true
-  COMPONENT_FILE_PATH: architect.yml
-  ARCHITECT_ACCOUNT: architect-ryan
-  COMPONENT_NAME: elk-example
-  ENVIRONMENT_NAME: example-4
-  BRANCH_NAME: master
-
 jobs:
-  architect_create_branch_deployments:
+  test_local:
+    name: Superset local deployment
     runs-on: ubuntu-latest
-    # if: github.ref_name == 'master'
     steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ env.BRANCH_NAME }}
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-      - uses: crazy-max/ghaction-github-runtime@v2 # Exports internal envs for Github Actions. Required for register caching to work.
-      - run: echo ${{ github.ref_name }}
-      - name: Install Architect CLI
-        run: npm install -g @architect-io/cli
-      - name: Set Architect API endpoint
-        run: architect config:set api_host https://api.dev.architect.io
-      - name: Set Architect registry endpoint
-        run: architect config:set registry_host registry.dev.architect.io
-      - name: Login to Architect Cloud
-        run: architect login -e ${{ secrets.ARCHITECT_EMAIL }} -p ${{ secrets.ARCHITECT_PASSWORD }} # These secrets were created on your behalf
+      - run: echo "Ran local workflow"
+
+  test_remote:
+    name: Superset remote deployment
+    if: github.base_ref == 'master'
+    env:
+      ACCOUNT_NAME: architect-ci
+      ENVIRONMENT_NAME: example-environment
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Ran remote workflow"
