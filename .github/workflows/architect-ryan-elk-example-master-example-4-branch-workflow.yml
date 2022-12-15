@@ -20,7 +20,7 @@ env:
 jobs:
   architect_create_branch_deployments:
     runs-on: ubuntu-latest
-    if: github.ref_name == 'master'
+    # if: github.ref_name == 'master'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,6 +29,7 @@ jobs:
         with:
           node-version: '16'
       - uses: crazy-max/ghaction-github-runtime@v2 # Exports internal envs for Github Actions. Required for register caching to work.
+      - run: echo ${{ github.ref_name }}
       - name: Install Architect CLI
         run: npm install -g @architect-io/cli
       - name: Set Architect API endpoint
