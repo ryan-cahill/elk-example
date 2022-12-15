@@ -20,6 +20,7 @@ env:
 jobs:
   architect_create_branch_deployments:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'ryan-cahill-patch-1'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,7 +37,3 @@ jobs:
         run: architect config:set registry_host registry.dev.architect.io
       - name: Login to Architect Cloud
         run: architect login -e ${{ secrets.ARCHITECT_EMAIL }} -p ${{ secrets.ARCHITECT_PASSWORD }} # These secrets were created on your behalf
-      - name: Register component w/ Architect
-        run: architect register ${{ env.COMPONENT_FILE_PATH }} -t latest
-      - name: Deploy component
-        run: architect deploy --auto-approve -e ${{ env.ENVIRONMENT_NAME }} ${{ env.COMPONENT_NAME }}:latest
