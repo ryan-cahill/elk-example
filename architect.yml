@@ -11,9 +11,8 @@ services:
           host_path: ./elasticsearch/config/elasticsearch.yml
           mount_path: /usr/share/elasticsearch/config/elasticsearch.yml
           readonly: true
-    volumes:
-      volume2:
-        mount_path: /usr/share/elasticsearch/data
+        volume2:
+          mount_path: /usr/share/elasticsearch/data
     interfaces:
       main:
         port: 9200
