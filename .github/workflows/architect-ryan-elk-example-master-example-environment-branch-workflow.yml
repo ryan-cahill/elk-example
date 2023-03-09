@@ -13,6 +13,7 @@ env:
   COMPONENT_NAME: elk-example
   ENVIRONMENT_NAME: example-environment
   BRANCH_NAME: master
+  CLUSTER_NAME: architect
 
 jobs:
   architect_create_branch_deployments:
@@ -35,5 +36,7 @@ jobs:
         run: architect login -e ${{ secrets.ARCHITECT_EMAIL }} -p ${{ secrets.ARCHITECT_PASSWORD }} # These secrets were created on your behalf
       - name: Register component w/ Architect
         run: architect register ${{ env.COMPONENT_FILE_PATH }} -t latest
+      - name: An environment created automatically by a GitHub branch workflow to facilitate automated component deployments
+        run: architect environment:create --cluster=${{ env.CLUSTER_NAME }} --description="Architect workflow environment" ${{ env.ENVIRONMENT_NAME }}
       - name: Deploy component
         run: architect deploy --auto-approve -e ${{ env.ENVIRONMENT_NAME }} ${{ env.COMPONENT_NAME }}:latest
